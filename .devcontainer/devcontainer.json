@@ -1,0 +1,8 @@
+{
+	"name": "aio-commerce-submissions",
+	"image": "mcr.microsoft.com/devcontainers/jekyll:2-bullseye",
+	"forwardPorts": [4000],
+	"postCreateCommand": "make run"
+
+
+}
