@@ -1,5 +1,6 @@
 ---
 title: License
+parent: Store Locator
 layout: home
 ---
 
