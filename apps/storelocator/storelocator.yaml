@@ -1,4 +1,5 @@
 storelocator:
+  version: 1.0.0
   public_name: Store Locator for Adobe Commerce as a Cloud Service
   app_subtitle: Store Locator and Product Inventory Lookup for Adobe Commerce Storefront and Cloud Service
   description: This is a shared block collection that allows you to create a store locator and product inventory lookup for your Adobe Commerce storefront and Cloud Service
@@ -6,3 +7,6 @@ storelocator:
   support_url: https://github.com/BlueAcornInc/aio-commerce-storelocator-blocks/issues
   support_phone:
   support_info: Please reach out directly for any support, or open an issue on our GitHub repository.
+  install_instructions: https://apps.blueacornici.shop/apps/storelocator/docs/install.html
+  sumbmittal_note: |
+    Working through the initial rounds of submittals with my team, I'm trying to lay the groundwork for them to build onto of so I'm creating a public doc repo while we're at it. Please excuse how bare everything is so far, hoping to build this out over the next few weeks
