@@ -4,7 +4,7 @@ shipstation:
   app_subtitle: Shipstation for Adobe Commerce as a Cloud Service as Adobe Commerce Storefront
   description: This app connects your Adobe Commerce store with ShipStation's powerful shipping platform, providing multi-carrier shipping options for your e-commerce operations
   support_email: doug.hatcher@blueacornici.com
-  support_url: 
+  support_url: https://apps.blueacornici.shop/apps/shipstation/docs/shipstation.html
   support_phone:
   support_info: Please reach out directly for any support, or open an issue on our GitHub repository. Our team provides comprehensive support for ShipStation integration setup and configuration.
   install_instructions: https://apps.blueacornici.shop/apps/shipstation/docs/install.html

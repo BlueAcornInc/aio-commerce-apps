@@ -1,4 +1,4 @@
 ---
-title: Yotpo
+title: Shipstation
 layout: home
 ---
