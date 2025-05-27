@@ -1,7 +1,7 @@
 shipstation:
   version: 1.0.0
   public_name: ShipStation for Adobe Commerce as a Cloud Service
-  app_subtitle: Shipstation support for Adobe Commerce as a Cloud Service as Adobe Commerce Storefront
+  app_subtitle: Shipstation for Adobe Commerce as a Cloud Service as Adobe Commerce Storefront
   description: This app connects your Adobe Commerce store with ShipStation's powerful shipping platform, providing multi-carrier shipping options for your e-commerce operations
   support_email: doug.hatcher@blueacornici.com
   support_url: 
