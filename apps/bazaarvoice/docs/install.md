@@ -1,6 +1,7 @@
 ---
-title: Bazaarvoice Installation Guide
-type: home
+title: Installation
+layout: home
+parent: Bazaarvoice
 ---
 
 # Bazaarvoice Installation Guide
@@ -9,5 +10,6 @@ Reviews and other concerns are presented to customers through blocks in Adobe Co
 
 ## Installing the App
 
-Installing the app can be done 
+Installing the app can be done by copying the blocks from the block collection into your Adobe Commerce Storefront.
 
+* [Bazaarvoice Block Collection](https://github.com/BlueAcornInc/aio-commerce-bazaarvoice-blocks)

@@ -1,6 +1,7 @@
 ---
-title: Yotpo Installation Guide
-type: home
+title: Installation
+layout: home
+parent: Yotpo
 ---
 
 # Yotpo Installation Guide
