@@ -5,7 +5,9 @@ layout: home
 
 # Store Locator for Adobe Commerce Storefront
 
-This shared block collection introduces store locator functionality, allowing users to select a store and view details on a map. It integrates with Leaflet.js to display store locations and enables filtering by ZIP code. It also provides store availability leveraging the native commerce APIs.
+This app introduces store locator functionality, allowing users to select a store and view details on a map using Adobe Commerce Storefront. 
+
+It integrates Leaflet.js to display store locations and enables filtering by ZIP code. It also provides store availability leveraging the native commerce APIs.
 
 ## Features
 - Store availability by leveraging native inventory sources
