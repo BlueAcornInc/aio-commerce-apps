@@ -1,21 +1,41 @@
 ---
-title: PaaS Setup
+title: Installation
 layout: page
 parent: Store Locator
 ---
 
-# PaaS Setup
+# Installation
+
+Generally, installing this app is simple. Find it in the Adobe Exchange, Add the App, and deploy it to an environment that is linked to the instance you would like the app installed with. 
+
+
+## Installing the App
+
+Find the app in the Adobe Exchange, and Aquire it.
+
+![Aquire the App](img/exchange-acquired.png)
+
+Then we need to manage it, and create an environment to deploy it to. This environment is like an Adobe Developer App Builder Environment, that you will need to link to your instance (see below!):
+
+![Manage the App](img/exchange-manage.png)
+
+Make sure to use the project it's deployed to:
+
+![App Environment](img/exchange-app-envs.png)
+
+
+## PaaS Setup
 
 This guide will walk a merchant or a developer through how to set up this project with an Adobe Commerce SaaS Workspace. It assumes you have nothing but the following entitlements from Adobe:
 
-## Pre-Reqs
+### Pre-Reqs
 
 * Adobe Developer App Builder 
 * Access to a working Adobe Commerce as a Cloud Service (SaaS) tenant
 * Local evironment running linux or compatible (i.e. MacOS or Windows with WCL2)
     * This repo contains a devcontainer suitable for running the solution, which requires a compatible IDE like Visual Studio Code and an OCI Runtime like Docker or Podman
 
-## Setup SaaS and Storefront
+### Setup SaaS and Storefront
 
 If you haven't already, we need to prepare the project and workspaces within our Adobe App Builder organization, as well as the code repos that represent Adobe Commerce Storefront and any additional public apps you may need to use.
 
@@ -26,7 +46,7 @@ $ gh auth login
 $ aio commerce init
 ```
 
-## Create an Integration in Adobe Commerce Admin
+### Create an Integration in Adobe Commerce Admin
 
 - This step allows your App Builder application to authenticate and communicate with your Adobe Commerce backend.
 
@@ -62,21 +82,21 @@ $ aio commerce init
 
 This will allow the app to fetch commerce data in future updates.
 
-## Register App to Commerce Instance
+### Register App to Commerce Instance
 
 This app has an Administrative compliment, which requires the Adobe IMS and Admin UI SDK to be configured. 
 
-### Setting up IMS
+#### Setting up IMS
 
 Behind the scenes, there is an app repository this gets registered with. It is exposed through IMS, so be sure to have your instances configured with IMS and in the same organization as your users and apps.
 
 * [Setup IMS for Adobe Commerce](https://experienceleague.adobe.com/en/docs/commerce-admin/start/admin/ims/adobe-ims-config)
 
-### Setting up Admin UI SDK
+#### Setting up Admin UI SDK
 
 Stores > Configuration > Adobe Services > Admin UI SDK and configure it to suit your needs.
 
-### Running Locally
+#### Running Locally
 
 ![Running Admin UI SDK Locally](img/admin-ui-sdk-setup.png)
 

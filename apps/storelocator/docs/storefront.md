@@ -1,6 +1,7 @@
 ---
 title: Storefront Blocks
 parent: Store Locator
+layout: home
 ---
 
 # Storefront Blocks
