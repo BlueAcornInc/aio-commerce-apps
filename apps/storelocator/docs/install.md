@@ -23,6 +23,12 @@ Make sure to use the project it's deployed to:
 
 ![App Environment](img/exchange-app-envs.png)
 
+### App Variables
+
+| Variable Name         | Value                         |
+|-----------------------|------------------------------|
+| `COMMERCE_ENDPOINT`   | `https://<your-production-storefront-url>/` |
+
 
 ## PaaS Setup
 
