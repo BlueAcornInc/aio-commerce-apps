@@ -1,25 +1,12 @@
 ---
 title: Installation
 layout: home
-parent: Bazaarvoice
+parent: Shipstation
 ---
 
-# Installation
+# Installation Guide
 
 Reviews and other concerns are presented to customers through blocks in Adobe Commerce Storefront. Some configurations can be stored in the content repo, or in the Adobe Commerce Administrative backoffice where things like private credentials can be stored. The blocks are designed to be paired with the app to provide complete functionality.
-
-## Storefront Blocks
-
-Installing the app can be done by copying the blocks from the block collection into your Adobe Commerce Storefront.
-
-* [Bazaarvoice Block Collection](https://github.com/BlueAcornInc/aio-commerce-bazaarvoice-blocks)
-
-
-### Document-based Authoring
-
-To add the store locator block, simply create a table within the document you want to embed it, with the header named `store-locator` like so. This will reference the block copied in with the previous step.
-
-![Store Locator in da.live](img/doc-based.png)
 
 
 ## Installing the App
@@ -42,7 +29,33 @@ Make sure to use the project it's deployed to:
 |-----------------------|------------------------------|
 | `COMMERCE_ENDPOINT`   | `https://<your-production-storefront-url>/` |
 
-## PaaS Setup
+
+## Setting up The Out-Of-Process Shipping Method
+
+Customers will need to create the out-of-process shipping method in order to complete the installation. This can be done through an onboarding script but it may be required to create it manually. 
+
+This can be done by leveraging the Checkout Integration Starter Kit. Please ensure the following method is registered on the target storefront:
+
+Replace [shipping-carriers.yaml](https://github.com/adobe/commerce-checkout-starter-kit/blob/main/shipping-carriers.yaml) with the following and post the shipping method.
+
+```yaml
+shipping_carriers:
+  - carrier:
+      code: "ShipStation"
+      title: "ShipStation Shipping"
+      stores:
+        - default
+      countries:
+        - US
+      active: true
+      sort_order: 10
+      tracking_available: true
+      shipping_labels_available: true
+
+```
+
+
+## PaaS App Setup
 
 This guide will walk a merchant or a developer through how to set up this project with an Adobe Commerce SaaS Workspace. It assumes you have nothing but the following entitlements from Adobe:
 
