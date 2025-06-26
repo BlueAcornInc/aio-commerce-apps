@@ -1,4 +1,0 @@
----
-title: Yotpo
-layout: home
----

@@ -5,5 +5,5 @@ theme: just-the-docs
 # url: https://apps.blueacornici.shop
 
 aux_links:
-  Submit an Issue: mailto:doug.hatcher@blueacornici.com
+  Submit an Issue: https://github.com/BlueAcornInc/aio-commerce-apps/issues
 
