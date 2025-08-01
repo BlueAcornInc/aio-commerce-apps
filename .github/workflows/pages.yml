@@ -43,6 +43,9 @@ jobs:
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
+      - name: Configure Git for HTTPS
+        run: |
+          git config --global url."https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/".insteadOf "git@github.com:"
       - name: Build documentation
         run: make build-docs
         env:
