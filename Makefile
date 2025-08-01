@@ -24,22 +24,30 @@ generate-images: ## Generate required images for the application
 
 build-docs: ## lets build the documentation
 	@echo "Building documentation..."
+	rm -rf docs-tmp/
+	rm -rf apps/
 	aio/bin/aio-clone docs-tmp
-	mkdir -p docs
+	mkdir -p apps
 	find docs-tmp -type f \( -iname '*.md' -o -iname '*.markdown' \) | while read src; do \
-		dest="docs/$${src#docs-tmp/}"; \
-		mkdir -p "$$(dirname "$$dest")"; \
+		dest="apps/$${src#docs-tmp/}"; \
+		mkdir -p "$$(dirname "$$dest")/docs"; \
 		if [ "$$(basename "$$src")" = "README.md" ]; then \
-			final_dest="$$(dirname "$$dest")/$$(basename "$$(dirname "$$src")").md"; \
+			final_dest="$$(dirname "$$dest")/docs/$$(basename "$$(dirname "$$src")").md"; \
 			title="$$(basename "$$(dirname "$$src")" | sed 's/[-_]/ /g' | sed 's/\b\w/\U&/g')"; \
+			echo "---" > "$$final_dest"; \
+			echo "title: $$title" >> "$$final_dest"; \
+			echo "layout: page" >> "$$final_dest"; \
+			echo "---" >> "$$final_dest"; \
 		else \
-			final_dest="$$dest"; \
+			final_dest="$$(dirname "$$dest")/docs/$$(basename "$$src")"; \
 			title="$$(basename "$$src" .md | sed 's/[-_]/ /g' | sed 's/\b\w/\U&/g')"; \
+			parent="$$(basename "$$(dirname "$$src")")"; \
+			echo "---" > "$$final_dest"; \
+			echo "title: $$title" >> "$$final_dest"; \
+			echo "layout: page" >> "$$final_dest"; \
+			echo "parent: $$parent" >> "$$final_dest"; \
+			echo "---" >> "$$final_dest"; \
 		fi; \
-		echo "---" > "$$final_dest"; \
-		echo "title: $$title" >> "$$final_dest"; \
-		echo "layout: page" >> "$$final_dest"; \
-		echo "---" >> "$$final_dest"; \
 		echo "" >> "$$final_dest"; \
 		cat "$$src" >> "$$final_dest"; \
 	done
