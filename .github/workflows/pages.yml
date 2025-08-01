@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: recursive
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -45,6 +45,8 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Build documentation
         run: make build-docs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       - name: Build with Jekyll
         # Outputs to the './_site' directory by default
         run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
