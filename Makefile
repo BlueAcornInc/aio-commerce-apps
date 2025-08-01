@@ -21,3 +21,27 @@ generate-images: ## Generate required images for the application
 	@echo "Generating images..."
 	# Add your image generation commands here, for example:
 	# python scripts/generate_images.py
+
+build-docs: ## lets build the documentation
+	@echo "Building documentation..."
+# 	rm -rf docs-tmp
+# 	aio/bin/aio-clone docs-tmp
+	mkdir -p docs
+	find docs-tmp -type f \( -iname '*.md' -o -iname '*.markdown' \) | while read src; do \
+		dest="docs/$${src#docs-tmp/}"; \
+		mkdir -p "$$(dirname "$$dest")"; \
+		if [ "$$(basename "$$src")" = "README.md" ]; then \
+			final_dest="$$(dirname "$$dest")/$$(basename "$$(dirname "$$src")").md"; \
+			title="$$(basename "$$(dirname "$$src")" | sed 's/[-_]/ /g' | sed 's/\b\w/\U&/g')"; \
+		else \
+			final_dest="$$dest"; \
+			title="$$(basename "$$src" .md | sed 's/[-_]/ /g' | sed 's/\b\w/\U&/g')"; \
+		fi; \
+		echo "---" > "$$final_dest"; \
+		echo "title: $$title" >> "$$final_dest"; \
+		echo "layout: page" >> "$$final_dest"; \
+		echo "---" >> "$$final_dest"; \
+		echo "" >> "$$final_dest"; \
+		cat "$$src" >> "$$final_dest"; \
+	done
+
