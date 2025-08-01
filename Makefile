@@ -24,8 +24,7 @@ generate-images: ## Generate required images for the application
 
 build-docs: ## lets build the documentation
 	@echo "Building documentation..."
-# 	rm -rf docs-tmp
-# 	aio/bin/aio-clone docs-tmp
+	aio/bin/aio-clone docs-tmp
 	mkdir -p docs
 	find docs-tmp -type f \( -iname '*.md' -o -iname '*.markdown' \) | while read src; do \
 		dest="docs/$${src#docs-tmp/}"; \
@@ -44,4 +43,4 @@ build-docs: ## lets build the documentation
 		echo "" >> "$$final_dest"; \
 		cat "$$src" >> "$$final_dest"; \
 	done
-
+	rm -rf docs-tmp
