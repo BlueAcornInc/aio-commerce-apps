@@ -1,6 +1,7 @@
 ---
-title: License Information
+title: License
 layout: page
+nav_order: 9999
 ---
 
 # License Information
