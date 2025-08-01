@@ -41,7 +41,7 @@ build-docs: ## lets build the documentation
 		else \
 			final_dest="$$(dirname "$$dest")/docs/$$(basename "$$src")"; \
 			title="$$(basename "$$src" .md | sed 's/[-_]/ /g' | sed 's/\b\w/\U&/g')"; \
-			parent="$$(basename "$$(dirname "$$src")")"; \
+			parent="$$(basename "$$(dirname "$$src")" | sed 's/[-_]/ /g' | sed 's/\b\w/\U&/g')"; \
 			echo "---" > "$$final_dest"; \
 			echo "title: $$title" >> "$$final_dest"; \
 			echo "layout: page" >> "$$final_dest"; \
