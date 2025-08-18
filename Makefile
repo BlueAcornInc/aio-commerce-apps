@@ -13,9 +13,15 @@ help: ## Show this help message
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  %-20s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 run: ## Run the application
+	$(MAKE) setup-git
+	$(MAKE) build-docs
 	@echo "Starting the application..."
 	bundle install
 	bundle exec jekyll serve
+
+setup-git: ## sets up git submodules and all that
+	git submodule init
+	git submodule update
 
 generate-images: ## Generate required images for the application
 	@echo "Generating images..."
