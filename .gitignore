@@ -2,3 +2,4 @@
 _site/**
 apps/**
 docs-tmp/**
+.env

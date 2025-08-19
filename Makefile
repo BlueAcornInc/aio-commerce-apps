@@ -12,9 +12,12 @@ help: ## Show this help message
 	@echo 'Targets:'
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  %-20s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-run: ## Run the application
+run: ## Run the solution
 	$(MAKE) setup-git
 	$(MAKE) build-docs
+	$(MAKE) start
+
+start: ## start the applicaton
 	@echo "Starting the application..."
 	bundle install
 	bundle exec jekyll serve
@@ -22,6 +25,7 @@ run: ## Run the application
 setup-git: ## sets up git submodules and all that
 	git submodule init
 	git submodule update
+	aio/bin/aio-bless
 
 generate-images: ## Generate required images for the application
 	@echo "Generating images..."
