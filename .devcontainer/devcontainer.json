@@ -1,8 +1,10 @@
 {
-	"name": "aio-commerce-submissions",
+	"name": "aio-commerce-apps",
 	"image": "mcr.microsoft.com/devcontainers/jekyll:2-bullseye",
 	"forwardPorts": [4000],
 	"appPort": [4000],
-	"postCreateCommand": "make run"
+	"postCreateCommand": "make run",	
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}"
+
 	
 }
