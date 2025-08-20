@@ -3,3 +3,4 @@ _site/**
 apps/**
 docs-tmp/**
 .env
+_img
