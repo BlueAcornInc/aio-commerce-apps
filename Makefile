@@ -36,29 +36,10 @@ build-docs: ## lets build the documentation
 	@echo "Building documentation..."
 	rm -rf docs-tmp/
 	rm -rf apps/
+	mkdir -p _site/aio/guides/img
+	mkdir -p aio/guides/img
 	aio/bin/aio-clone docs-tmp
 	mkdir -p apps
-	find docs-tmp -type f \( -iname '*.md' -o -iname '*.markdown' \) | while read src; do \
-		dest="apps/$${src#docs-tmp/}"; \
-		mkdir -p "$$(dirname "$$dest")/docs"; \
-		if [ "$$(basename "$$src")" = "README.md" ]; then \
-			final_dest="$$(dirname "$$dest")/docs/$$(basename "$$(dirname "$$src")").md"; \
-			title="$$(basename "$$(dirname "$$src")" | sed 's/[-_]/ /g' | sed 's/\b\w/\U&/g')"; \
-			echo "---" > "$$final_dest"; \
-			echo "title: $$title" >> "$$final_dest"; \
-			echo "layout: page" >> "$$final_dest"; \
-			echo "---" >> "$$final_dest"; \
-		else \
-			final_dest="$$(dirname "$$dest")/docs/$$(basename "$$src")"; \
-			title="$$(basename "$$src" .md | sed 's/[-_]/ /g' | sed 's/\b\w/\U&/g')"; \
-			parent="$$(basename "$$(dirname "$$src")" | sed 's/[-_]/ /g' | sed 's/\b\w/\U&/g')"; \
-			echo "---" > "$$final_dest"; \
-			echo "title: $$title" >> "$$final_dest"; \
-			echo "layout: page" >> "$$final_dest"; \
-			echo "parent: $$parent" >> "$$final_dest"; \
-			echo "---" >> "$$final_dest"; \
-		fi; \
-		echo "" >> "$$final_dest"; \
-		cat "$$src" >> "$$final_dest"; \
-	done
+	chmod +x build-docs.sh
+	./build-docs.sh
 	rm -rf docs-tmp
