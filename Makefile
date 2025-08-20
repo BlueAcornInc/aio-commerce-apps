@@ -28,7 +28,7 @@ setup-git: ## sets up git submodules and all that
 	aio/bin/aio-bless
 
 generate-images: ## Generate required images for the application
-	@echo "Generating images..."
+	echo "Generating images..."
 	# Add your image generation commands here, for example:
 	# python scripts/generate_images.py
 
@@ -36,10 +36,11 @@ build-docs: ## lets build the documentation
 	@echo "Building documentation..."
 	rm -rf docs-tmp/
 	rm -rf apps/
+	rm -rf _img/
 	mkdir -p _site/aio/guides/img
 	mkdir -p aio/guides/img
 	aio/bin/aio-clone docs-tmp
 	mkdir -p apps
-	chmod +x build-docs.sh
-	./build-docs.sh
+	./build-docs.sh || { @echo "Error in build-docs.sh"; exit 1; }
 	rm -rf docs-tmp
+	

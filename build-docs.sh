@@ -47,8 +47,8 @@ find docs-tmp -type f \( -iname "*.md" -o -iname "*.markdown" \) | while read sr
       
       # Copy content after the frontmatter
       sed -n "$((second_marker+1)),\$p" "$src" | \
-        sed -E 's|!\[(.*)\]\(/([^)]+)\)|![\1](/aio/guides/img/\2)|g' | \
-        sed -E 's|!\[(.*)\]\(([^/][^)]+)\)|![\1](/aio/guides/\2)|g' >> "$final_dest"
+        sed -E 's|!\[(.*)\]\(([^)]+)\)|![\1](/_img/\2)|g' | \
+        sed -E 's|/_img/\./|/_img/|g' >> "$final_dest"
     else
       # No valid frontmatter found - close our frontmatter and copy all content
       echo "---" >> "$final_dest"
@@ -57,12 +57,12 @@ find docs-tmp -type f \( -iname "*.md" -o -iname "*.markdown" \) | while read sr
       # Skip the first line if it's a --- and copy the rest
       if head -1 "$src" | grep -q "^---$"; then
         sed -n '2,$p' "$src" | \
-          sed -E 's|!\[(.*)\]\(/([^)]+)\)|![\1](/aio/guides/img/\2)|g' | \
-          sed -E 's|!\[(.*)\]\(([^/][^)]+)\)|![\1](/aio/guides/\2)|g' >> "$final_dest"
+          sed -E 's|!\[(.*)\]\(([^)]+)\)|![\1](/_img/\2)|g' | \
+          sed -E 's|/_img/\./|/_img/|g' >> "$final_dest"
       else
         cat "$src" | \
-          sed -E 's|!\[(.*)\]\(/([^)]+)\)|![\1](/aio/guides/img/\2)|g' | \
-          sed -E 's|!\[(.*)\]\(([^/][^)]+)\)|![\1](/aio/guides/\2)|g' >> "$final_dest"
+          sed -E 's|!\[(.*)\]\(([^)]+)\)|![\1](/_img/\2)|g' | \
+          sed -E 's|/_img/\./|/_img/|g' >> "$final_dest"
       fi
     fi
   else
@@ -71,8 +71,8 @@ find docs-tmp -type f \( -iname "*.md" -o -iname "*.markdown" \) | while read sr
     echo "" >> "$final_dest"
     
     cat "$src" | \
-      sed -E 's|!\[(.*)\]\(/([^)]+)\)|![\1](/aio/guides/img/\2)|g' | \
-      sed -E 's|!\[(.*)\]\(([^/][^)]+)\)|![\1](/aio/guides/\2)|g' >> "$final_dest"
+      sed -E 's|!\[(.*)\]\(([^)]+)\)|![\1](/_img/\2)|g' | \
+      sed -E 's|/_img/\./|/_img/|g' >> "$final_dest"
   fi
   
   # Extract image references and copy them to the right place
@@ -80,53 +80,79 @@ find docs-tmp -type f \( -iname "*.md" -o -iname "*.markdown" \) | while read sr
     if echo "$img_url" | grep -qE "^https?://"; then
       # Handle remote URLs
       img_name="$(basename "$img_url")"
-      img_dest="_site/aio/guides/img/$img_name"
-      mkdir -p "_site/aio/guides/img"
+      img_dest="_img/$img_name"
+      mkdir -p "_img"
       if [ ! -f "$img_dest" ]; then
-        curl -sSL "$img_url" -o "$img_dest"
+        echo "Downloading remote image: $img_url"
+        curl -sSL "$img_url" -o "$img_dest" || echo "Failed to download: $img_url" >&2
       fi
-      # Also copy to the Jekyll source directory
-      mkdir -p "aio/guides/img"
-      cp "$img_dest" "aio/guides/img/$img_name" 2>/dev/null || true
     elif echo "$img_url" | grep -qE "^/"; then
       # Handle absolute paths (starting with /)
-      img_name="$(basename "$img_url")"
-      img_dest="_site/aio/guides/img/$img_name"
-      mkdir -p "_site/aio/guides/img"
+      # Remove leading slash and preserve path structure
+      img_path="${img_url#/}"
+      img_dest="_img/$img_path"
+      mkdir -p "$(dirname "$img_dest")"
       # Search for the image in docs-tmp directory
-      find docs-tmp -name "$img_name" -type f -print | xargs -I{} cp {} "$img_dest" 2>/dev/null || true
-      # If not found, create a placeholder
-      if [ ! -f "$img_dest" ]; then
-        convert -size 200x100 xc:white -font Arial -pointsize 16 -fill black -draw "text 20,50 'Image not found: $img_url'" "$img_dest" 2>/dev/null || echo "Image not found: $img_url" > "$img_dest.missing.txt"
-        echo "Warning: Image not found: $img_url" >&2
-      fi
-      # Also copy to the Jekyll source directory
-      mkdir -p "aio/guides/img"
-      cp "$img_dest" "aio/guides/img/$img_name" 2>/dev/null || true
-    else
-      # Handle relative paths
       img_name="$(basename "$img_url")"
-      img_dest="_site/aio/guides/img/$img_name"
-      mkdir -p "_site/aio/guides/img"
+      found_img=$(find docs-tmp -name "$img_name" -type f -print -quit)
+      if [ -n "$found_img" ]; then
+        echo "Copying image: $found_img -> $img_dest"
+        cp "$found_img" "$img_dest"
+      else
+        echo "Warning: Image not found: $img_url" >&2
+        # Create a simple text placeholder
+        echo "Image not found: $img_url" > "$img_dest.missing.txt"
+      fi
+    else
+      # Handle relative paths - preserve full path structure
+      img_dest="_img/$img_url"
+      mkdir -p "$(dirname "$img_dest")"
       # Try to find and copy the image relative to the original source file
       src_dir="$(dirname "$src")"
+      
       if [ -f "$src_dir/$img_url" ]; then
+        echo "Copying relative image: $src_dir/$img_url -> $img_dest"
         cp "$src_dir/$img_url" "$img_dest"
-      elif [ -f "$src_dir/img/$img_name" ]; then
-        cp "$src_dir/img/$img_name" "$img_dest"
       else
-        find docs-tmp -name "$img_name" -type f -print | xargs -I{} cp {} "$img_dest" 2>/dev/null || true
-        if [ ! -f "$img_dest" ]; then
-          convert -size 200x100 xc:white -font Arial -pointsize 16 -fill black -draw "text 20,50 'Image not found: $img_url'" "$img_dest" 2>/dev/null || echo "Image not found: $img_url" > "$img_dest.missing.txt"
-          echo "Warning: Image not found: $img_url" >&2
+        # Search for the image anywhere in docs-tmp
+        img_name="$(basename "$img_url")"
+        found_img=$(find docs-tmp -name "$img_name" -type f -print -quit)
+        if [ -n "$found_img" ]; then
+          echo "Found image elsewhere: $found_img -> $img_dest"
+          cp "$found_img" "$img_dest"
+        else
+          echo "Warning: Image not found: $img_url (searched in $src_dir)" >&2
+          # Create a simple text placeholder
+          echo "Image not found: $img_url" > "$img_dest.missing.txt"
         fi
       fi
-      # Also copy to the Jekyll source directory
-      mkdir -p "aio/guides/img"
-      cp "$img_dest" "aio/guides/img/$img_name" 2>/dev/null || true
     fi
   done
 done
+
+# Copy all image files from docs-tmp to ensure nothing is missed
+echo "Copying all image files from docs-tmp..."
+find docs-tmp -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.gif" -o -iname "*.svg" -o -iname "*.webp" \) | while read img_file; do
+  # Remove docs-tmp/ and the first directory level, but keep subdirectory structure
+  rel_path="${img_file#docs-tmp/}"
+  # Remove the first directory component (project name) but keep everything after
+  rel_path_no_parent=$(echo "$rel_path" | sed 's|^[^/]*/||')
+  img_dest="_img/$rel_path_no_parent"
+  mkdir -p "$(dirname "$img_dest")"
+  if [ ! -f "$img_dest" ]; then
+    echo "Copying additional image: $img_file -> $img_dest"
+    cp "$img_file" "$img_dest"
+  else
+    echo "Image already exists: $img_dest"
+  fi
+done
+
+# Display final image count for verification
+echo "Image processing summary:"
+echo "Total images found in docs-tmp: $(find docs-tmp -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.gif" -o -iname "*.svg" -o -iname "*.webp" \) | wc -l)"
+echo "Total images copied to _img: $(find _img -type f 2>/dev/null | wc -l || echo "0")"
+echo "Images in destination directory:"
+ls -la _img/ 2>/dev/null || echo "Directory _img/ does not exist"
 
 # Final validation to ensure proper frontmatter structure
 echo "Validating frontmatter in generated files..."
