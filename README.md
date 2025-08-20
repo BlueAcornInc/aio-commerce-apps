@@ -1,6 +1,6 @@
-# Adobe Commerce Exchange Submittals
+# Adobe Commerce App Docs
 
-This repo contains the public and private metadata required to submit apps to the Adobe Exchange
+This repo contains the public and private metadata required to submit apps to the Adobe Exchange, as well as a jekyll site and orchastration to compile the documentation from repos across the org
 
 ## apps.blueacornici.shop
 
