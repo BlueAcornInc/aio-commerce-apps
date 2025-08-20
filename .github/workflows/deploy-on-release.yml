@@ -1,8 +1,17 @@
-name: Deploy on Dependent Repository Release
+name: Deploy Site
 
 on:
+  # Triggered by dependent repository releases
   repository_dispatch:
     types: [release-trigger]
+  
+  # Allow manual triggering from GitHub UI
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for manual deployment'
+        required: false
+        default: 'Manual deployment'
 
 jobs:
   deploy:
@@ -31,9 +40,14 @@ jobs:
 
       - name: Log trigger information
         run: |
-          echo "Triggered by repository: ${{ github.event.client_payload.repository }}"
-          echo "Release tag: ${{ github.event.client_payload.tag }}"
-          echo "Release URL: ${{ github.event.client_payload.release_url }}"
+          if [ "${{ github.event_name }}" == "repository_dispatch" ]; then
+            echo "🚀 Triggered by release in: ${{ github.event.client_payload.repository }}"
+            echo "📦 Release tag: ${{ github.event.client_payload.tag }}"
+            echo "🔗 Release URL: ${{ github.event.client_payload.release_url }}"
+          elif [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "👤 Manual deployment triggered"
+            echo "📝 Reason: ${{ github.event.inputs.reason }}"
+          fi
 
       - name: Update dependencies and build
         run: |
