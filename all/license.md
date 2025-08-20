@@ -1,5 +1,5 @@
 ---
-title: License
+title: License Information 
 layout: page
 nav_order: 9999
 ---
