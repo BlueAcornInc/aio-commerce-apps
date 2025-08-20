@@ -7,3 +7,21 @@ theme: just-the-docs
 aux_links:
   Submit an Issue: https://github.com/BlueAcornInc/aio-commerce-apps/issues
 
+# Jekyll configuration
+exclude:
+  - aio/
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/
+  - .git/
+  - .gitignore
+  - README.md
+  - Makefile
+include:
+  - _img
+
+# Ensure Jekyll copies the _img directory to _site
+keep_files:
+  - _img
+
