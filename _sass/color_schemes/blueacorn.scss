@@ -1,0 +1,38 @@
+// Blue Acorn iCi colour scheme for just-the-docs.
+//
+// Palette matches the tokens in the devdocs skill theme so PDFs, decks and this
+// site read as one system. Only variable assignments belong here -- this file is
+// imported before the theme's rules, so anything else would be overwritten.
+
+$ba-navy:     #052777;
+$ba-blue:     #006df4;
+$ba-ltblue:   #00befa;
+$ba-mint:     #02efab;
+$ba-green:    #2ba55f;
+$ba-gray:     #595959;
+$ba-ltgray:   #d6d6d6;
+$ba-offwhite: #f5f5f5;
+$ba-ink:      #17181b;
+$ba-line:     #e6e7eb;
+$ba-surface:  #f6f7f9;
+
+// Text and headings
+$body-text-color:              $ba-ink;
+$body-heading-color:           $ba-navy;
+$link-color:                   $ba-blue;
+
+// Chrome
+$sidebar-color:                $ba-surface;
+$border-color:                 $ba-line;
+$nav-child-link-color:         $ba-gray;
+
+// Components
+$btn-primary-color:            $ba-blue;
+$base-button-color:            #ffffff;
+$code-background-color:        $ba-surface;
+$search-background-color:      #ffffff;
+$search-result-preview-color:  $ba-gray;
+$table-background-color:       #ffffff;
+// Literal rather than darken(): the colour functions are deprecated in current
+// dart-sass and this file must not emit warnings during the Pages build.
+$feedback-color:               #eceef1;

@@ -1,6 +1,7 @@
 title: Commerce Apps
 description: Information and support for Blue Acorn Adobe Commerce Apps
 theme: just-the-docs
+color_scheme: blueacorn
 
 # Required for absolute canonical URLs (see _includes/head_custom.html)
 url: https://apps.blueacornici.shop

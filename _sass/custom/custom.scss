@@ -1,3 +1,95 @@
-a {
-    color: #006EF5;
+// Polish on top of the blueacorn colour scheme.
+//
+// Literal values rather than the scheme's SCSS variables: this file is imported
+// last, and keeping it self-contained means editing the palette in one place
+// cannot break the build here.
+
+:root {
+  --ba-navy: #052777;
+  --ba-blue: #006df4;
+  --ba-ltblue: #00befa;
+  --ba-mint: #02efab;
+  --ba-gray: #595959;
+  --ba-line: #e6e7eb;
+  --ba-surface: #f6f7f9;
+}
+
+// A brand rule under the site title, so the sidebar reads as ours at a glance.
+.site-header {
+  border-bottom: 3px solid var(--ba-mint);
+}
+
+.site-title {
+  color: var(--ba-navy) !important;
+  font-weight: 600;
+}
+
+// Headings: give sections real separation. The default h2 sits too close to the
+// preceding paragraph to scan a long install guide.
+.main-content {
+  h2 {
+    margin-top: 2.4rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid var(--ba-line);
+  }
+
+  h3 { margin-top: 1.8rem; }
+
+  // Numbered procedure steps ("#### 1. Install ...") are the backbone of the
+  // install guides -- make them scannable.
+  h4 {
+    margin-top: 1.5rem;
+    color: var(--ba-navy);
+  }
+
+  // Screenshots are the point of the user guide; frame them so they read as
+  // artefacts rather than as inline decoration.
+  img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid var(--ba-line);
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(5, 39, 119, 0.08);
+    margin: 0.75rem 0;
+  }
+
+  // Tables: the config-field tables are dense, so banding earns its keep.
+  table {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+
+    th {
+      background-color: var(--ba-surface);
+      color: var(--ba-navy);
+      font-weight: 600;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #fbfcfd;
+    }
+  }
+
+  // Blockquotes are used for "Note:" callouts throughout the app docs.
+  blockquote {
+    border-left: 4px solid var(--ba-ltblue);
+    background-color: var(--ba-surface);
+    padding: 0.6rem 1rem;
+    margin-left: 0;
+    color: #2c3038;
+
+    > :first-child { margin-top: 0; }
+    > :last-child  { margin-bottom: 0; }
+  }
+
+  // Inline code inside prose, distinct from fenced blocks.
+  p > code,
+  li > code,
+  td > code {
+    color: var(--ba-navy);
+    background-color: var(--ba-surface);
+    border: 1px solid var(--ba-line);
+    border-radius: 3px;
+    padding: 0.1em 0.35em;
+  }
 }
