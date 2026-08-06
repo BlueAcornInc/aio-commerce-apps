@@ -84,3 +84,7 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          # First deploy after a ~4 month gap kept aborting at the 10m default
+          # while the deployment was still reported in_progress.
+          timeout: 1800000
