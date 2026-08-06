@@ -10,9 +10,15 @@ on:
   push:
     branches: ["main"]
 
-  # Triggered by dependent repository releases
+  # Triggered by dependent repository releases. This path needs a PAT in the
+  # source repo (DEPLOY_TRIGGER_TOKEN), so the nightly schedule below is the
+  # credential-free backstop that keeps docs current if that token lapses.
   repository_dispatch:
     types: [release-trigger]
+
+  # Rebuild nightly so docs changes in the manifest repos land without a push here
+  schedule:
+    - cron: "17 7 * * *"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -42,7 +48,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: recursive
-          token: ${{ secrets.GH_TOKEN }}
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -52,13 +57,13 @@ jobs:
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
+      # Every repo in the manifest is public, so the clones need no credentials.
+      # This only rewrites the manifest's git@ URLs into anonymous HTTPS.
       - name: Configure Git for HTTPS
         run: |
-          git config --global url."https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/".insteadOf "git@github.com:"
+          git config --global url."https://github.com/".insteadOf "git@github.com:"
       - name: Build documentation
         run: make build-docs
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       - name: Build with Jekyll
         # Outputs to the './_site' directory by default
         run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
