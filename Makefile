@@ -42,5 +42,7 @@ build-docs: ## lets build the documentation
 	aio/bin/aio-clone docs-tmp
 	mkdir -p apps
 	./build-docs.sh || { @echo "Error in build-docs.sh"; exit 1; }
+	# Must run while docs-tmp still exists -- it reads each repo's git history.
+	python3 bin/postprocess-docs.py || { echo "Error in postprocess-docs.py"; exit 1; }
 	rm -rf docs-tmp
 	

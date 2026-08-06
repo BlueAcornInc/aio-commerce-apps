@@ -2,7 +2,8 @@ title: Commerce Apps
 description: Information and support for Blue Acorn Adobe Commerce Apps
 theme: just-the-docs
 
-# url: https://apps.blueacornici.shop
+# Required for absolute canonical URLs (see _includes/head_custom.html)
+url: https://apps.blueacornici.shop
 
 aux_links:
   Submit an Issue: https://github.com/BlueAcornInc/aio-commerce-apps/issues
@@ -18,6 +19,11 @@ exclude:
   - .gitignore
   - README.md
   - Makefile
+  - bin/
+  - build-docs.sh
+  - manifest
+  - redirects.yml
+  - cloudflare-redirects.csv
 include:
   - _img
 

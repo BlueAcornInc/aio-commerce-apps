@@ -1,0 +1,15 @@
+{%- comment -%}
+Canonical link for every page.
+
+Pages generated as redirect stubs set `canonical_url` in their front matter so
+they point at their replacement rather than at themselves — that is what keeps
+an old URL from competing with the page that superseded it.
+
+Requires `url` to be set in _config.yml; without it `absolute_url` emits a
+relative path and the tag is useless.
+{%- endcomment -%}
+{%- if page.canonical_url -%}
+<link rel="canonical" href="{{ page.canonical_url | absolute_url }}">
+{%- else -%}
+<link rel="canonical" href="{{ page.url | absolute_url }}">
+{%- endif %}

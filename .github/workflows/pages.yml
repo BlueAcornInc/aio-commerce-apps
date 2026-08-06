@@ -72,6 +72,15 @@ jobs:
       - name: Upload artifact
         # Automatically uploads an artifact from the './_site' directory by default
         uses: actions/upload-pages-artifact@v3
+      # The Bulk Redirects list is generated from the same mapping as the stub
+      # pages. Published as an artifact so it can be imported into Cloudflare
+      # without re-running the build locally.
+      - name: Upload Cloudflare redirect list
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloudflare-redirects
+          path: cloudflare-redirects.csv
+          if-no-files-found: warn
 
   # Deployment job
   deploy:
@@ -84,7 +93,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        with:
-          # First deploy after a ~4 month gap kept aborting at the 10m default
-          # while the deployment was still reported in_progress.
-          timeout: 1800000

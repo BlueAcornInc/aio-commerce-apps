@@ -1,0 +1,17 @@
+# Manual redirect overrides.
+#
+# Most redirects are derived automatically from the git history of the app
+# repos: rename a markdown file and bin/postprocess-docs.py leaves a working URL
+# behind on the next build. This file is for the cases history cannot express:
+#
+#   - a doc that was deleted rather than renamed (no automatic target)
+#   - content split across several pages, where only a human can pick the target
+#   - a rename git did not detect because the rewrite was too extensive
+#   - URLs published externally (Adobe Exchange listings) that must never 404
+#
+# Entries here win over anything derived from history. Paths are site-absolute.
+# A redirect is skipped if `from` is still a real page in the build, or if `to`
+# is not, so a stale entry degrades to a no-op rather than shadowing content.
+#
+# - from: /apps/storelocator/docs/old-name.html
+#   to:   /apps/storelocator/docs/install.html
