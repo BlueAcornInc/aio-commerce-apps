@@ -6,20 +6,58 @@ if [ ! -d "docs-tmp" ]; then
   exit 1
 fi
 
+# Turn a path component into a nav label: "store-locator" -> "Store Locator".
+# awk rather than sed: `\b\w/\U&` is a GNU extension that silently does nothing
+# on BSD sed, so titles came out lower-cased on macOS and capitalised in CI.
+titlecase() {
+  echo "$1" | tr '_-' '  ' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) substr($i,2)}1'
+}
+
 find docs-tmp -type f \( -iname "*.md" -o -iname "*.markdown" \) | while read src; do
   dest="apps/${src#docs-tmp/}"
   mkdir -p "$(dirname "$dest")/docs"
+  # Nav hierarchy. Every page belongs under its app; only the app's own README
+  # sits at the top level. Without this, a nested block README (which has no
+  # parent by virtue of being called README) is promoted to the root, and the
+  # sidebar becomes a flat alphabetical list of every app and block mixed
+  # together -- with both "store locator" (the block) and "storelocator" (the
+  # app) as siblings.
+  rel="${src#docs-tmp/}"          # <app>/<subdir>/<file>.md
+  app="${rel%%/*}"                # <app>
+  subdir="$(dirname "$rel")"      # <app>/<subdir>  (or <app> at the repo root)
+  subdir="${subdir#$app}"         # /<subdir>       (or empty)
+  subdir="${subdir#/}"            # <subdir>        (or empty)
+
+  app_title="$(titlecase "$app")"
+  parent=""
+  grand_parent=""
+
   if [ "$(basename "$src")" = "README.md" ]; then
     final_dest="$(dirname "$dest")/docs/$(basename "$(dirname "$src")").md"
-    title="$(basename "$(dirname "$src")" | sed 's/[-_]/ /g' | sed 's/\b\w/\U&/g')"
-    parent=""
+    if [ -z "$subdir" ]; then
+      # The app's own landing page.
+      title="$app_title"
+    else
+      title="$(titlecase "$(basename "$subdir")")"
+      up="$(dirname "$subdir")"
+      if [ "$up" = "." ]; then
+        parent="parent: $app_title"
+      else
+        parent="parent: $(titlecase "$(basename "$up")")"
+        grand_parent="grand_parent: $app_title"
+      fi
+    fi
   else
     final_dest="$(dirname "$dest")/docs/$(basename "$src")"
-    title="$(basename "$src" .md | sed 's/[-_]/ /g' | sed 's/\b\w/\U&/g')"
-    parent="$(basename "$(dirname "$src")" | sed 's/[-_]/ /g' | sed 's/\b\w/\U&/g')"
-    parent="parent: $parent"
+    title="$(titlecase "$(basename "$src" .md)")"
+    if [ -z "$subdir" ]; then
+      parent="parent: $app_title"
+    else
+      parent="parent: $(titlecase "$(basename "$subdir")")"
+      grand_parent="grand_parent: $app_title"
+    fi
   fi
-  
+
   # Create new frontmatter - start fresh each time
   echo "---" > "$final_dest"
   echo "title: $title" >> "$final_dest"
@@ -27,7 +65,10 @@ find docs-tmp -type f \( -iname "*.md" -o -iname "*.markdown" \) | while read sr
   if [ -n "$parent" ]; then
     echo "$parent" >> "$final_dest"
   fi
-  
+  if [ -n "$grand_parent" ]; then
+    echo "$grand_parent" >> "$final_dest"
+  fi
+
   # Check if the file has valid frontmatter and extract additional parameters
   if head -1 "$src" | grep -q "^---$"; then
     # Find the second frontmatter marker (must be within first 20 lines to be valid)
