@@ -1,0 +1,70 @@
+{%- comment -%}
+  Previous / next links across an app's pages.
+
+  This replaces the old header menu. An app is a short, ordered sequence
+  (overview, then the guides, then any block docs), so stepping through it beats
+  a list of every page repeated on every screen.
+
+  Order is: the app's overview, then each second-level page alphabetically, with
+  that page's own children immediately after it -- the same order the docs read
+  in, and the same order the homepage cards use.
+{%- endcomment -%}
+
+{%- assign pg_parts = page.url | remove_first: '/' | split: '/' -%}
+{%- if pg_parts[0] == 'apps' -%}
+  {%- assign pg_app = pg_parts[1] -%}
+  {%- assign pg_prefix = '/apps/' | append: pg_app | append: '/' -%}
+  {%- assign pg_pages = site.html_pages
+        | where_exp: 'p', 'p.url contains pg_prefix'
+        | where_exp: 'p', 'p.title' -%}
+  {%- assign pg_root = pg_pages | where_exp: 'p', 'p.parent == nil' | first -%}
+
+  {%- if pg_root -%}
+    {%- comment -%} Flatten into reading order. {%- endcomment -%}
+    {%- assign ordered = '' | split: '' -%}
+    {%- assign ordered = ordered | push: pg_root -%}
+    {%- assign pg_children = pg_pages
+          | where_exp: 'p', 'p.parent == pg_root.title'
+          | where_exp: 'p', 'p.grand_parent == nil'
+          | sort: 'nav_order' -%}
+    {%- for child in pg_children -%}
+      {%- assign ordered = ordered | push: child -%}
+      {%- assign pg_gc = pg_pages
+            | where_exp: 'p', 'p.grand_parent == pg_root.title'
+            | where_exp: 'p', 'p.parent == child.title'
+            | sort: 'nav_order' -%}
+      {%- for gc in pg_gc -%}
+        {%- assign ordered = ordered | push: gc -%}
+      {%- endfor -%}
+    {%- endfor -%}
+
+    {%- assign idx = -1 -%}
+    {%- for item in ordered -%}
+      {%- if item.url == page.url -%}{%- assign idx = forloop.index0 -%}{%- endif -%}
+    {%- endfor -%}
+
+    {%- if idx >= 0 and ordered.size > 1 -%}
+      {%- assign prev_i = idx | minus: 1 -%}
+      {%- assign next_i = idx | plus: 1 -%}
+      <nav class="pager" aria-label="{{ pg_root.title }} topics">
+        {%- if idx > 0 -%}
+          {%- assign prev = ordered[prev_i] -%}
+          <a class="pager__link pager__link--prev" href="{{ prev.url | relative_url }}" rel="prev">
+            <span class="pager__dir"><span aria-hidden="true">&larr;</span> Previous</span>
+            <span class="pager__title">{% if prev.url == pg_root.url %}Overview{% else %}{{ prev.title }}{% endif %}</span>
+          </a>
+        {%- else -%}
+          <span class="pager__spacer"></span>
+        {%- endif -%}
+
+        {%- if next_i < ordered.size -%}
+          {%- assign next = ordered[next_i] -%}
+          <a class="pager__link pager__link--next" href="{{ next.url | relative_url }}" rel="next">
+            <span class="pager__dir">Next <span aria-hidden="true">&rarr;</span></span>
+            <span class="pager__title">{{ next.title }}</span>
+          </a>
+        {%- endif -%}
+      </nav>
+    {%- endif -%}
+  {%- endif -%}
+{%- endif -%}

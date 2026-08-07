@@ -1,0 +1,60 @@
+{%- comment -%}
+  Site footer. Full width, outside .main -- see _layouts/default.html.
+
+  The GitHub copy deliberately does not promise a response time. These repos are
+  maintained by the team that builds the apps, not by a staffed support desk,
+  and a footer implying otherwise just produces frustrated follow-ups. Asking
+  for reproduction detail up front is more useful than an SLA we would miss.
+{%- endcomment -%}
+
+<footer class="ba-footer">
+  <div class="ba-footer__inner">
+    <div class="ba-footer__brand">
+      {%- comment -%}
+        The full lockup from blueacornici.shop, which already contains the
+        wordmark and "an Infosys company" -- no need to set that as text beside
+        it. Inverted to white: the brand blue on this navy is close to
+        unreadable, and the grey tagline vanishes entirely.
+      {%- endcomment -%}
+      <a href="https://blueacornici.com/" class="ba-footer__logo-link">
+        <img class="ba-footer__logo" src="{{ '/assets/img/blueacorn-lockup.png' | relative_url }}"
+             alt="Blue Acorn iCi, an Infosys company" width="688" height="174" />
+      </a>
+      <p class="ba-footer__tag">Commerce apps for Adobe Commerce and Edge Delivery Services.</p>
+    </div>
+
+    <div class="ba-footer__cols">
+      <div class="ba-footer__col">
+        <h2 class="ba-footer__heading">Blue Acorn iCi</h2>
+        <ul>
+          <li><a href="https://blueacornici.com/">blueacornici.com</a></li>
+          <li><a href="https://blueacornici.com/contact/">Talk to us</a></li>
+          <li><a href="https://www.infosys.com/">Infosys</a></li>
+        </ul>
+      </div>
+
+      <div class="ba-footer__col">
+        <h2 class="ba-footer__heading">On GitHub</h2>
+        <ul>
+          <li><a href="https://github.com/BlueAcornInc">BlueAcornInc</a></li>
+          <li><a href="https://github.com/BlueAcornInc/aio-commerce-apps/issues">Report a docs issue</a></li>
+          <li><a href="https://github.com/BlueAcornInc/aio-commerce-apps">This site's source</a></li>
+        </ul>
+      </div>
+
+      <div class="ba-footer__col ba-footer__col--wide">
+        <h2 class="ba-footer__heading">Getting a useful answer</h2>
+        <p>
+          Issues are read by the people who build these apps, not by a support
+          desk, so include the app, your Commerce version (SaaS or PaaS) and
+          enough detail to reproduce. That gets you a real answer far faster
+          than a nudge does.
+        </p>
+      </div>
+    </div>
+
+    <p class="ba-footer__legal">
+      &copy; {{ 'now' | date: '%Y' }} Blue Acorn iCi x Infosys LLC. All rights reserved.
+    </p>
+  </div>
+</footer>

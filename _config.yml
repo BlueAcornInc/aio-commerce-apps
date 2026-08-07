@@ -3,11 +3,16 @@ description: Information and support for Blue Acorn Adobe Commerce Apps
 theme: just-the-docs
 color_scheme: blueacorn
 
+# No sidebar: each app has only a few pages, so navigation lives across the top
+# instead (see _includes/header_custom.html) and the content gets the width.
+nav_enabled: false
+
 # Required for absolute canonical URLs (see _includes/head_custom.html)
 url: https://apps.blueacornici.shop
 
-aux_links:
-  Submit an Issue: https://github.com/BlueAcornInc/aio-commerce-apps/issues
+# No aux_links: the header row is navigation, and "Submit an Issue" belongs with
+# the other ways to reach us in the footer rather than competing with the app
+# picker for attention.
 
 # Jekyll configuration
 exclude:

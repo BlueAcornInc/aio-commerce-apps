@@ -9,15 +9,35 @@
   Should not be cached, because nav_footer_custom.html might depend on page.
 {%- endcomment -%}
 
+{%- comment -%}
+  Header shows the app you are in, not the site name: "Commerce Apps" is both
+  vague and inaccurate (the guides are not apps), and once the nav is scoped to
+  one product the header may as well name it. The switcher below is the way
+  back out to the other apps.
+{%- endcomment -%}
+{%- assign sb_parts = page.url | remove_first: '/' | split: '/' -%}
+{%- assign sb_app = '' -%}
+{%- if sb_parts[0] == 'apps' -%}{%- assign sb_app = sb_parts[1] -%}{%- endif -%}
+{%- assign sb_prefix = '/apps/' | append: sb_app | append: '/' -%}
+{%- assign sb_root = site.html_pages
+      | where_exp: 'p', 'p.url contains sb_prefix'
+      | where_exp: 'p', 'p.parent == nil'
+      | where_exp: 'p', 'p.title'
+      | first -%}
+
 <div class="side-bar">
   <div class="site-header" role="banner">
-    <a href="{{ '/' | relative_url }}" class="site-title lh-tight">{% include title.html %}</a>
+    {%- if sb_root -%}
+      <a href="{{ sb_root.url | relative_url }}" class="site-title lh-tight">{{ sb_root.title }}</a>
+    {%- else -%}
+      <a href="{{ '/' | relative_url }}" class="site-title lh-tight">{% include title.html %}</a>
+    {%- endif -%}
     <button id="menu-button" class="site-button btn-reset" aria-label="Toggle menu" aria-pressed="false">
       <svg viewBox="0 0 24 24" class="icon" aria-hidden="true"><use xlink:href="#svg-menu"></use></svg>
     </button>
   </div>
 
-  {% include_cached components/site_nav.html %}
+  {% include components/app_nav.html %}
 
   {% capture nav_footer_custom %}
     {%- include nav_footer_custom.html -%}

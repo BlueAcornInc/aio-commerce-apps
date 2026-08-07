@@ -1,0 +1,78 @@
+{%- comment -%}
+  Top navigation, injected into the theme's main header.
+
+  Each app has only a handful of pages, so a full-height sidebar spent a
+  quarter of the viewport listing three links. This puts the app picker and
+  those links across the top instead, and gives the content the whole width.
+
+  The picker is a <details>/<summary>, so the disclosure works without any
+  JavaScript and stays keyboard accessible.
+{%- endcomment -%}
+
+{%- assign hc_parts = page.url | remove_first: '/' | split: '/' -%}
+{%- assign hc_app = '' -%}
+{%- if hc_parts[0] == 'apps' -%}{%- assign hc_app = hc_parts[1] -%}{%- endif -%}
+
+{%- assign hc_roots = site.html_pages
+      | where_exp: 'p', "p.url contains '/apps/'"
+      | where_exp: 'p', 'p.parent == nil'
+      | where_exp: 'p', 'p.title'
+      | sort: 'title' -%}
+
+<div class="topnav">
+  {%- comment -%}
+    Brand mark, far left, always home. Empty alt: the adjacent app name already
+    labels the header, so announcing the logo would just repeat it.
+  {%- endcomment -%}
+  <a class="brand" href="{{ '/' | relative_url }}" aria-label="Blue Acorn iCi — all applications">
+    <img class="brand__mark" src="{{ '/assets/img/acorn.png' | relative_url }}"
+         alt="" width="248" height="275" />
+  </a>
+
+  {%- if hc_app != '' -%}
+    {%- assign hc_prefix = '/apps/' | append: hc_app | append: '/' -%}
+    {%- assign hc_pages = site.html_pages
+          | where_exp: 'p', 'p.url contains hc_prefix'
+          | where_exp: 'p', 'p.title' -%}
+    {%- assign hc_root = hc_pages | where_exp: 'p', 'p.parent == nil' | first -%}
+
+    <details class="app-picker">
+      <summary class="app-picker__summary">
+        <span class="app-picker__name">{{ hc_root.title }}</span>
+        <svg class="app-picker__caret" viewBox="0 0 24 24" aria-hidden="true"
+             fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </summary>
+      <ul class="app-picker__menu">
+        <li><a href="{{ '/' | relative_url }}">All applications</a></li>
+        {%- for app in hc_roots -%}
+          <li><a href="{{ app.url | relative_url }}"
+                 {% if app.url == hc_root.url %}aria-current="true"{% endif %}>{{ app.title }}</a></li>
+        {%- endfor -%}
+      </ul>
+    </details>
+
+    {%- comment -%}
+      No page links here. Listing every page across the header bloated it and
+      wrapped once an app had more than three, and it duplicated what the page's
+      own contents list already does. Movement between topics lives at the
+      bottom of the page instead -- see components/pager.html.
+    {%- endcomment -%}
+  {%- else -%}
+    <details class="app-picker">
+      <summary class="app-picker__summary">
+        <span class="app-picker__name">{{ site.title }}</span>
+        <svg class="app-picker__caret" viewBox="0 0 24 24" aria-hidden="true"
+             fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </summary>
+      <ul class="app-picker__menu">
+        {%- for app in hc_roots -%}
+          <li><a href="{{ app.url | relative_url }}">{{ app.title }}</a></li>
+        {%- endfor -%}
+      </ul>
+    </details>
+  {%- endif -%}
+</div>

@@ -5,6 +5,15 @@
 // cannot break the build here.
 
 :root {
+  // Base family from the summit theme's --type-base-font-family. Its actual
+  // faces (Source Sans Pro, Adobe Clean) are external or licensed, so this
+  // takes the stack it falls back to -- same feel, no font loading.
+  --ba-font: 'Helvetica Neue', Helvetica, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, sans-serif;
+  // Summit sets body as 1.6rem/2.6rem -- a 1.625 ratio. The theme default is
+  // tighter than that and reads cramped over long install procedures.
+  --ba-leading: 1.65;
+
   --ba-navy: #052777;
   --ba-blue: #006df4;
   --ba-ltblue: #00befa;
@@ -13,10 +22,297 @@
   --ba-line: #e6e7eb;
   --ba-surface: #f6f7f9;
 }
+// Top navigation. Replaces the sidebar (nav_enabled: false in _config.yml) --
+// each app has only a handful of pages, so a full-height sidebar spent a
+// quarter of the viewport listing three links.
+//
+// display:contents so the picker and the page links become direct flex children
+// of .main-header. That lets the picker share the header row with search while
+// the links claim a full-width row of their own underneath, instead of all
+// three fighting over one line and wrapping raggedly.
+.topnav {
+  display: contents;
+}
 
-// A brand rule under the site title, so the sidebar reads as ours at a glance.
-.site-header {
-  border-bottom: 3px solid var(--ba-mint);
+// App picker: the name plus a caret, opening the list of applications.
+// <details> so the disclosure needs no JavaScript and stays keyboard accessible.
+.app-picker {
+  position: relative;
+  flex: 0 0 auto;
+
+  &__summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.55rem;
+    border-radius: 4px;
+    cursor: pointer;
+    list-style: none;
+    &::-webkit-details-marker { display: none; }
+    &:hover { background-color: var(--ba-surface); }
+  }
+
+  &__name {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--ba-navy);
+    white-space: nowrap;
+  }
+
+  &__caret {
+    width: 1rem;
+    height: 1rem;
+    color: var(--ba-gray);
+    flex: 0 0 auto;
+  }
+
+  &[open] &__caret { transform: rotate(180deg); }
+
+  &__menu {
+    position: absolute;
+    z-index: 100;
+    top: calc(100% + 0.3rem);
+    left: 0;
+    min-width: 13rem;
+    margin: 0;
+    padding: 0.3rem;
+    list-style: none;
+    background-color: #fff;
+    border: 1px solid var(--ba-line);
+    border-radius: 6px;
+    box-shadow: 0 4px 14px rgba(5, 39, 119, 0.12);
+
+    li { margin: 0; list-style: none; }
+
+    a {
+      display: block;
+      padding: 0.4rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.88rem;
+      text-decoration: none !important;
+      color: #17181b;
+
+      &:hover { background-color: var(--ba-surface); }
+      &[aria-current='true'] { font-weight: 600; color: var(--ba-navy); }
+    }
+  }
+}
+
+// The header is now the primary navigation, so give it the brand rule the
+// sidebar used to carry.
+.main-header {
+  border-bottom: 2px solid var(--ba-mint);
+
+  // The theme sizes .search to fill the header; with the nav sharing that row
+  // it collapses to a couple of characters. Order it last and give it a floor.
+  flex-wrap: wrap;
+  align-items: center;
+
+  // The theme pins the header to a single row's height. The nav lives on a
+  // second row now, so it must grow instead -- otherwise the row overflows and
+  // lands on top of the breadcrumb below.
+  height: auto;
+  max-height: none;
+
+  .search {
+    order: 2;
+    // Sits against the right edge; wide enough not to clip the placeholder,
+    // narrow enough not to leave a gulf between it and the nav.
+    flex: 0 1 17rem;
+    min-width: 12rem;
+    margin-right: 0.5rem;
+
+    // At wide breakpoints the theme sets height:100% on .search inside a media
+    // query. The header must be height:auto to fit the second nav row, so that
+    // percentage resolves against auto -- i.e. zero -- and the search vanishes.
+    // !important because the media-query rule otherwise wins on order.
+    height: 3rem !important;
+
+    .search-input-wrap {
+      height: 100% !important;
+      box-shadow: none;
+    }
+  }
+
+  // Keep the aux links on one line at the far right; they wrap otherwise.
+  .aux-nav {
+    order: 3;
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+}
+
+// Brand mark sits ahead of the app name, Apple-style: small, quiet, always home.
+.brand {
+  order: 0;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 0.5rem 0 1.5rem;
+  flex: 0 0 auto;
+
+  &__mark {
+    width: auto;
+    height: 1.35rem;
+    display: block;
+    // The theme frames content images; this is chrome, not content.
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+  }
+
+  &:hover .brand__mark { opacity: 0.85; }
+}
+
+// margin-right:auto keeps the mark and the app name together on the left and
+// pushes search to the right, rather than the header spreading all three apart.
+.app-picker {
+  order: 1;
+  margin-right: auto;
+}
+
+// Previous / next pager, at the foot of the content. Replaces the header menu:
+// an app is a short ordered sequence, so stepping through it beats repeating a
+// list of every page on every screen.
+.pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 3.5rem 0 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--ba-line);
+}
+
+.pager__spacer {
+  flex: 1 1 0;
+}
+
+.pager__link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1 1 0;
+  max-width: 22rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--ba-line);
+  border-radius: 6px;
+  text-decoration: none !important;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover {
+    border-color: var(--ba-blue);
+    box-shadow: 0 2px 8px rgba(5, 39, 119, 0.08);
+  }
+
+  &--next {
+    text-align: right;
+    align-items: flex-end;
+  }
+}
+
+.pager__dir {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ba-gray);
+}
+
+.pager__title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ba-navy);
+}
+// Landing page app cards. Generated in index.md from the app pages themselves.
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0 2rem;
+}
+
+.app-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--ba-line);
+  border-left: 3px solid var(--ba-blue);
+  border-radius: 6px;
+  background-color: #fff;
+  text-decoration: none !important;
+  transition:
+    box-shadow 0.15s ease,
+    border-left-color 0.15s ease;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(5, 39, 119, 0.1);
+    border-left-color: var(--ba-mint);
+  }
+
+  &__title {
+    font-weight: 600;
+    color: var(--ba-navy);
+  }
+
+  &__desc {
+    font-size: 0.85rem;
+    line-height: 1.45;
+    color: var(--ba-gray);
+  }
+
+  // The digest: jump straight to a page rather than landing on the overview
+  // and navigating again.
+  &__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 0.5rem;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--ba-line);
+
+    a {
+      font-size: 0.8rem;
+      color: var(--ba-blue);
+      text-decoration: none !important;
+      &:hover { text-decoration: underline !important; }
+    }
+  }
+}
+
+// The card is a container now, not a link, so the title carries the affordance.
+a.app-card__title {
+  text-decoration: none !important;
+  &:hover { text-decoration: underline !important; }
+}
+
+// Scoped nav sits directly under the switcher, so give it a divider rather
+// than relying on the theme's spacing for a nav that is no longer global.
+.app-nav {
+  border-top: 1px solid var(--ba-line);
+  padding-top: 0.5rem;
+
+  .nav-list .nav-list-item .nav-list-link.active {
+    font-weight: 600;
+    color: var(--ba-navy);
+    background-color: var(--ba-surface);
+  }
+
+  // The theme collapses nested lists behind an expander it renders itself.
+  // This nav is already scoped to one app, so the whole tree is small enough
+  // to show at once -- an extra click to discover two block pages is not worth it.
+  .nav-list .nav-list {
+    display: block;
+  }
+
+  // Third level needs to read as subordinate to the second.
+  .nav-list .nav-list .nav-list-link {
+    font-size: 0.8rem;
+    padding-left: 2.2rem;
+    color: var(--ba-gray);
+  }
 }
 
 .site-title {
@@ -24,21 +320,59 @@
   font-weight: 600;
 }
 
+body {
+  font-family: var(--ba-font);
+  // Peg the footer to the bottom. On short pages (EDS.md is four lines) it
+  // otherwise floated into the middle with dead white space beneath it.
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main {
+  flex: 1 0 auto;
+}
+
+.ba-footer {
+  flex-shrink: 0;
+}
+
 // Headings: give sections real separation. The default h2 sits too close to the
 // preceding paragraph to scan a long install guide.
 .main-content {
+  line-height: var(--ba-leading);
+
+  p,
+  li {
+    line-height: var(--ba-leading);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  ul,
+  ol { margin-bottom: 1.25rem; }
+
+  li + li { margin-top: 0.3rem; }
+
+  h1 { margin-bottom: 1rem; }
+
   h2 {
-    margin-top: 2.4rem;
-    padding-bottom: 0.3rem;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.4rem;
     border-bottom: 1px solid var(--ba-line);
   }
 
-  h3 { margin-top: 1.8rem; }
+  h3 {
+    margin-top: 2.2rem;
+    margin-bottom: 0.75rem;
+  }
 
   // Numbered procedure steps ("#### 1. Install ...") are the backbone of the
   // install guides -- make them scannable.
   h4 {
-    margin-top: 1.5rem;
+    margin-top: 1.75rem;
+    margin-bottom: 0.6rem;
     color: var(--ba-navy);
   }
 
@@ -91,5 +425,140 @@
     border: 1px solid var(--ba-line);
     border-radius: 3px;
     padding: 0.1em 0.35em;
+  }
+}
+
+// Full-width site footer (see _layouts/default.html and
+// _includes/components/site_footer.html). Navy rather than the brighter blue:
+// it anchors the page without competing with links in the content above it.
+.ba-footer {
+  background-color: var(--ba-navy);
+  color: #ffffff;
+  margin-top: 5rem;
+  padding: 3rem 1.5rem;
+
+  &__inner {
+    max-width: 62rem;
+    margin: 0 auto;
+  }
+
+  // No rules between the blocks: even spacing separates them well enough, and
+  // three horizontal lines in a footer this small read as clutter.
+  &__brand {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  &__logo-link {
+    display: inline-block;
+    border-bottom: 0 !important;
+    flex: 0 0 auto;
+  }
+
+  &__logo {
+    width: auto;
+    height: 2.6rem;
+    display: block;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    // Render the lockup white: brand blue on navy is close to unreadable and
+    // the grey "an Infosys company" disappears completely.
+    filter: brightness(0) invert(1);
+  }
+
+  &__mark {
+    width: auto;
+    height: 2.1rem;
+    display: block;
+    // Chrome, not content: undo the framing applied to images in prose.
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    // The mark is BA blue; on navy it needs lifting toward the mint end.
+    filter: brightness(1.6);
+  }
+
+  &__tag {
+    margin: 0;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  &__cols {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    gap: 2.5rem 3rem;
+  }
+
+  &__col--wide {
+    grid-column: span 2;
+
+    @media (max-width: 44rem) {
+      grid-column: auto;
+    }
+  }
+
+  // Nested selector, not a bare BEM class: the theme sizes headings with
+  // enough specificity to otherwise win and render these at h2 size.
+  // !important because just-the-docs sizes headings through its fs-* mixins,
+  // which emit font-size with !important -- without it these render at h2 size
+  // and "Blue Acorn iCi" wraps onto two lines.
+  .ba-footer__heading {
+    margin: 0 0 1rem !important;
+    font-size: 0.72rem !important;
+    line-height: 1.3 !important;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #ffffff !important;
+    border: 0;
+    padding: 0;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    margin: 0 0 0.7rem;
+    list-style: none;
+
+    &:last-child { margin-bottom: 0; }
+  }
+
+  p {
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.78);
+    margin: 0;
+  }
+
+  a {
+    color: #ffffff;
+    font-size: 0.88rem;
+    text-decoration: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+
+    &:hover {
+      border-bottom-color: #ffffff;
+      color: #ffffff;
+    }
+  }
+
+  // Nested, not bare BEM: `.ba-footer p { margin: 0 }` above is more specific
+  // than `.ba-footer__legal` and was zeroing this out, so the copyright rode up
+  // alongside the last link in the first column.
+  .ba-footer__legal {
+    margin: 2.75rem 0 0;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.55);
   }
 }
