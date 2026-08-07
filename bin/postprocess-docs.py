@@ -154,6 +154,35 @@ def git_deletions(repo):
     return gone
 
 
+def readme_aliases(docs_tmp):
+    """Map each <dir>/docs/README.html to the page that README actually became.
+
+    build-docs.sh renames README.md to its containing directory, so the URL a
+    reader guesses -- .../docs/README.html -- never exists. That guess is a
+    reasonable one and has already been reported as a broken link, so leave a
+    redirect at it rather than a 404.
+    """
+    aliases = {}
+    if not os.path.isdir(docs_tmp):
+        return aliases
+    for app in sorted(os.listdir(docs_tmp)):
+        repo = os.path.join(docs_tmp, app)
+        if not os.path.isdir(repo):
+            continue
+        for dirpath, dirs, files in os.walk(repo):
+            dirs[:] = [d for d in dirs if not d.startswith(".") and d != "node_modules"]
+            if "README.md" not in files:
+                continue
+            rel = os.path.relpath(os.path.join(dirpath, "README.md"), repo).replace(os.sep, "/")
+            target = published_url(app, rel)
+            if not target:
+                continue
+            alias = posixpath.join(posixpath.dirname(target), "README.html")
+            if alias != target:
+                aliases[alias] = target
+    return aliases
+
+
 def load_overrides(path):
     """Parse the tiny `- from: X` / `  to: Y` list without a YAML dependency."""
     mapping = {}
@@ -234,6 +263,13 @@ def main():
                 url = published_url(app, path)
                 if url and not exists(url):
                     print("      deleted, no automatic target: %s" % url)
+
+    aliases = readme_aliases(args.docs_tmp)
+    if aliases:
+        print("  %d README alias(es)" % len(aliases))
+        for a in sorted(aliases):
+            print("      %s" % a)
+    mapping.update(aliases)
 
     overrides = load_overrides(args.overrides)
     if overrides:

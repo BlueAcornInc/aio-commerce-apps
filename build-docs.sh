@@ -13,6 +13,43 @@ titlecase() {
   echo "$1" | tr '_-' '  ' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) substr($i,2)}1'
 }
 
+# Display names that titlecase cannot derive: repo and file names carry no word
+# boundaries ("storelocator") or are shouted ("EDS.md", "DEVELOPMENT.md").
+# Anything not listed falls through to titlecase.
+label_for() {
+  case "$1" in
+    storelocator)   echo "Store Locator" ;;
+    shipstation)    echo "ShipStation" ;;
+    bazaarvoice)    echo "Bazaarvoice" ;;
+    yotpo)          echo "Yotpo" ;;
+    stripe)         echo "Stripe" ;;
+    guides)         echo "Guides" ;;
+    EDS)            echo "EDS Storefront" ;;
+    DEVELOPMENT)    echo "Development" ;;
+    CICD)           echo "CI/CD" ;;
+    INSTALLATION)   echo "Installation" ;;
+    CODE_OF_CONDUCT) echo "Code of Conduct" ;;
+    *)              titlecase "$1" ;;
+  esac
+}
+
+# Reading order within an app. Alphabetical puts "Blocks" before "Install" and
+# buries the page most readers actually want. Lower sorts first; anything not
+# listed lands in the middle, and a repo can still override by setting
+# nav_order in its own front matter (that wins -- see the copy below).
+order_for() {
+  case "$1" in
+    install|INSTALLATION) echo 10 ;;
+    configuration)        echo 20 ;;
+    EDS)                  echo 30 ;;
+    blocks)               echo 40 ;;
+    DEVELOPMENT)          echo 60 ;;
+    CICD)                 echo 70 ;;
+    CODE_OF_CONDUCT)      echo 90 ;;
+    *)                    echo 50 ;;
+  esac
+}
+
 find docs-tmp -type f \( -iname "*.md" -o -iname "*.markdown" \) | while read src; do
   dest="apps/${src#docs-tmp/}"
   mkdir -p "$(dirname "$dest")/docs"
@@ -28,7 +65,7 @@ find docs-tmp -type f \( -iname "*.md" -o -iname "*.markdown" \) | while read sr
   subdir="${subdir#$app}"         # /<subdir>       (or empty)
   subdir="${subdir#/}"            # <subdir>        (or empty)
 
-  app_title="$(titlecase "$app")"
+  app_title="$(label_for "$app")"
   parent=""
   grand_parent=""
 
@@ -38,22 +75,22 @@ find docs-tmp -type f \( -iname "*.md" -o -iname "*.markdown" \) | while read sr
       # The app's own landing page.
       title="$app_title"
     else
-      title="$(titlecase "$(basename "$subdir")")"
+      title="$(label_for "$(basename "$subdir")")"
       up="$(dirname "$subdir")"
       if [ "$up" = "." ]; then
         parent="parent: $app_title"
       else
-        parent="parent: $(titlecase "$(basename "$up")")"
+        parent="parent: $(label_for "$(basename "$up")")"
         grand_parent="grand_parent: $app_title"
       fi
     fi
   else
     final_dest="$(dirname "$dest")/docs/$(basename "$src")"
-    title="$(titlecase "$(basename "$src" .md)")"
+    title="$(label_for "$(basename "$src" .md)")"
     if [ -z "$subdir" ]; then
       parent="parent: $app_title"
     else
-      parent="parent: $(titlecase "$(basename "$subdir")")"
+      parent="parent: $(label_for "$(basename "$subdir")")"
       grand_parent="grand_parent: $app_title"
     fi
   fi
@@ -67,6 +104,11 @@ find docs-tmp -type f \( -iname "*.md" -o -iname "*.markdown" \) | while read sr
   fi
   if [ -n "$grand_parent" ]; then
     echo "$grand_parent" >> "$final_dest"
+  fi
+  if [ "$(basename "$src")" = "README.md" ]; then
+    echo "nav_order: $(order_for "$(basename "$subdir")")" >> "$final_dest"
+  else
+    echo "nav_order: $(order_for "$(basename "$src" .md)")" >> "$final_dest"
   fi
 
   # Check if the file has valid frontmatter and extract additional parameters
