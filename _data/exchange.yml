@@ -1,0 +1,17 @@
+# Adobe Exchange listings, keyed by the directory name in the manifest.
+#
+# Hand-maintained, unlike _data/repos.yml: a listing URL contains an Exchange
+# app id that exists nowhere in the repo, so there is nothing to derive it from.
+# Add an app here when its listing goes live; omitting one is fine, the
+# resources strip just leaves the Exchange link out.
+#
+# Every URL below was confirmed to return 200 on 2026-08-07. If you add one,
+# check it -- a dead link here is what started the ticket that built this page.
+
+storelocator: https://exchange.adobe.com/apps/ec/abu9q09vq6/store-locator-by-blue-acorn
+yotpo: https://exchange.adobe.com/apps/ec/ab69951791/yotpo-by-blue-acorn
+bazaarvoice: https://exchange.adobe.com/apps/ec/ab60r1prq2/bazaarvoice-by-blue-acorn
+shipstation: https://exchange.adobe.com/apps/ec/abr6u70q9v/shipstation-by-blue-acorn
+
+# stripe: not published to Exchange yet -- the "Stripe" listings on Exchange
+# belong to Stripe, not to us. Add it here once ours is live.

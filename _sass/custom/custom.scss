@@ -172,6 +172,83 @@
 }
 
 // Previous / next pager, at the foot of the content. Replaces the header menu:
+// Where to install the app and where its source lives. Sits between the
+// content and the pager, tinted rather than outlined so it reads as a distinct
+// block without adding another hard rule to a page that already has several.
+.resources {
+  margin: 3rem 0 0;
+  padding: 1.25rem 1.5rem 1.5rem;
+  background-color: var(--ba-surface);
+  border-radius: 8px;
+}
+
+.resources__heading {
+  margin: 0 0 1rem !important;
+  padding: 0 !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ba-gray) !important;
+  border-bottom: 0 !important;
+}
+
+// Three across on desktop, collapsing to one on narrow screens. auto-fit with
+// a wide minimum wrapped 2 + 1 and left a hole, which read as a mistake.
+.resources__list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none;
+
+  @media (max-width: 50rem) {
+    grid-template-columns: 1fr;
+  }
+
+  > li {
+    margin: 0 !important;
+
+    // The theme draws list bullets as a ::before pseudo-element, so
+    // `list-style: none` alone leaves them floating outside the cards.
+    &::before {
+      content: none !important;
+    }
+  }
+}
+
+.resources__link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  height: 100%;
+  padding: 0.75rem 1rem;
+  background-color: #ffffff;
+  border: 1px solid var(--ba-line);
+  border-radius: 6px;
+  text-decoration: none !important;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover {
+    border-color: var(--ba-blue);
+    box-shadow: 0 2px 8px rgba(5, 39, 119, 0.08);
+  }
+}
+
+.resources__label {
+  font-weight: 600;
+  color: var(--ba-navy);
+}
+
+.resources__note {
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--ba-gray);
+}
+
 // an app is a short ordered sequence, so stepping through it beats repeating a
 // list of every page on every screen.
 .pager {

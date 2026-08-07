@@ -1,0 +1,50 @@
+{%- comment -%}
+  Where to get the app, and where its source lives.
+
+  Sits after the content rather than above it: a reader who has just finished a
+  configuration page is the one who wants the repo or the listing, and putting
+  it at the top would push the documentation itself below the fold.
+
+  Repo URLs come from _data/repos.yml, generated from the manifest at build
+  time. Exchange URLs come from _data/exchange.yml by hand. Either may be
+  missing -- guides has no listing, stripe is not published yet -- so every
+  link is emitted only if its data exists, and the whole block disappears if
+  neither does.
+{%- endcomment -%}
+
+{%- assign res_parts = page.url | remove_first: '/' | split: '/' -%}
+{%- if res_parts[0] == 'apps' -%}
+  {%- assign res_app = res_parts[1] -%}
+  {%- assign res_repo = site.data.repos[res_app] -%}
+  {%- assign res_exchange = site.data.exchange[res_app] -%}
+
+  {%- if res_repo or res_exchange -%}
+    <aside class="resources" aria-label="Resources for this app">
+      <h2 class="resources__heading">Get this app</h2>
+      <ul class="resources__list">
+        {%- if res_exchange -%}
+          <li>
+            <a class="resources__link" href="{{ res_exchange }}">
+              <span class="resources__label">Adobe Exchange</span>
+              <span class="resources__note">Install it into your Commerce instance</span>
+            </a>
+          </li>
+        {%- endif -%}
+        {%- if res_repo -%}
+          <li>
+            <a class="resources__link" href="{{ res_repo }}">
+              <span class="resources__label">Source on GitHub</span>
+              <span class="resources__note">Read the code, or fork it</span>
+            </a>
+          </li>
+          <li>
+            <a class="resources__link" href="{{ res_repo }}/issues">
+              <span class="resources__label">Report an issue</span>
+              <span class="resources__note">Bugs and feature requests</span>
+            </a>
+          </li>
+        {%- endif -%}
+      </ul>
+    </aside>
+  {%- endif -%}
+{%- endif -%}

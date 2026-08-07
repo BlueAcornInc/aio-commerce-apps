@@ -32,6 +32,9 @@ layout: table_wrappers
             {% include components/children_nav.html %}
           {% endif %}
 
+          {%- comment -%} Where to install the app and where its source lives. {%- endcomment -%}
+          {% include components/app_resources.html %}
+
           {%- comment -%} Step through an app's topics; replaces the header menu. {%- endcomment -%}
           {% include components/pager.html %}
         </main>
