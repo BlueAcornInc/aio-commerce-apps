@@ -13,5 +13,7 @@ yotpo: https://exchange.adobe.com/apps/ec/ab69951791/yotpo-by-blue-acorn
 bazaarvoice: https://exchange.adobe.com/apps/ec/ab60r1prq2/bazaarvoice-by-blue-acorn
 shipstation: https://exchange.adobe.com/apps/ec/abr6u70q9v/shipstation-by-blue-acorn
 
-# stripe: not published to Exchange yet -- the "Stripe" listings on Exchange
-# belong to Stripe, not to us. Add it here once ours is live.
+# Deliberately absent: stripe, adyen. We built both apps, but Stripe and Adyen
+# own the IP, so they are not ours to advertise -- this is not a gap waiting to
+# be filled. They are excluded from the publishing manifest for the same
+# reason; see the comment at the top of ./manifest.

@@ -1,3 +1,13 @@
+# Apps published to the public documentation site.
+#
+# This list is deliberately NOT the same as the manifest at the root of the aio
+# repo, which is for cloning everything locally. Only apps we are free to
+# advertise belong here.
+#
+# Do not add: stripe, adyen. We built those apps, but Stripe and Adyen own the
+# IP, so they are not ours to publish or promote. Cloning them for development
+# is fine -- documenting them on a public Blue Acorn site is not.
+
 git@github.com:BlueAcornInc/aio-commerce-bazaarvoice.git bazaarvoice
 git@github.com:BlueAcornInc/aio-commerce-shipstation.git shipstation
 git@github.com:BlueAcornInc/aio-commerce-yotpo.git yotpo
