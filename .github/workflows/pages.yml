@@ -69,6 +69,11 @@ jobs:
         run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
         env:
           JEKYLL_ENV: production
+      # Gate one: refuse to publish a build that has lost a URL somebody else
+      # links to. This runs before the upload, so a regression cannot reach
+      # production at all -- the previous deploy simply stays up.
+      - name: Verify critical URLs exist in the build
+        run: python3 bin/check-urls.py --site _site
       - name: Upload artifact
         # Automatically uploads an artifact from the './_site' directory by default
         uses: actions/upload-pages-artifact@v3
@@ -93,3 +98,17 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  # Gate two: prove the URLs actually work on the real site. The build check
+  # cannot see a bad Pages upload, a stale CDN edge, or a redirect rule, and
+  # this is what the outside world -- Adobe's listing, an installed app --
+  # actually hits. It also runs on the nightly schedule, so a URL that breaks
+  # for reasons outside this repo still gets caught within a day.
+  verify:
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Verify critical URLs on production
+        run: python3 bin/check-urls.py --host https://apps.blueacornici.shop

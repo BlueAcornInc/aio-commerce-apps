@@ -1,0 +1,41 @@
+# URLs that must never 404. This file is a contract, not a wish list.
+#
+# Everything here is linked from somewhere we do not control -- an Adobe
+# Exchange listing, an in-app Support tab shipped in a released app, a customer
+# bookmark. We cannot edit those links, so the URL has to keep working.
+#
+# bin/check-urls.py verifies every line twice: against the built site before
+# deploying (so a broken URL never reaches production) and against production
+# after deploying. Either failure fails the workflow.
+#
+# Redirect stubs count as present -- they return 200 and carry a canonical
+# link. The checker also follows each stub's canonical target and fails if the
+# target itself is missing, since a stub pointing into the void is still a dead
+# end for the reader.
+#
+# Adding a line is cheap. Removing one means accepting that someone else's link
+# will break, so do not remove a line without knowing who links to it.
+
+# --- The homepage --------------------------------------------------------
+/
+
+# --- Store Locator -------------------------------------------------------
+# The Adobe Exchange listing links to install.html. Adobe reported it broken
+# in August 2026 (the ticket that produced this file); restoring it required
+# no resubmission because we kept the URL rather than changing the listing.
+# If this 404s again, the Exchange listing is advertising a dead page.
+/apps/storelocator/docs/install.html
+/apps/storelocator/docs/storelocator.html
+/apps/storelocator/docs/README.html
+
+# --- The other published apps -------------------------------------------
+# Each app's Support tab links its own docs page from inside a released app,
+# so these are baked into software already installed on customer instances.
+/apps/bazaarvoice/docs/bazaarvoice.html
+/apps/bazaarvoice/docs/README.html
+/apps/shipstation/docs/shipstation.html
+/apps/shipstation/docs/README.html
+/apps/yotpo/docs/yotpo.html
+/apps/yotpo/docs/README.html
+/apps/guides/docs/guides.html
+/apps/guides/docs/README.html
